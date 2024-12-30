@@ -5,11 +5,18 @@
   const titleText = "You Might Also Like";
 
   const init = async () => {
-    const products = await getProducts();
+    let products;
+    if (!localStorage.getItem("productCarouselData")) {
+      products = await getProducts();
+    } else {
+      products = JSON.parse(localStorage.getItem("productCarouselData"));
+    }
+    if (products) {
+      buildCarousel(products);
+      buildCSS();
+      setEventListeners();
+    }
     if (!products) return;
-    buildCarousel(products);
-    buildCSS();
-    setEventListeners();
   };
 
   const getProducts = async () => {
@@ -175,7 +182,7 @@
         }
 
         .heart-icon.favorited {
-            fill: red;
+            fill: blue;
         }
 
         .carousel-arrow {
@@ -211,29 +218,13 @@
         }
       `;
 
-    $("<style>").addClass("carousel-style").html(css).appendTo("head");
+    const styleElement = document.createElement("style");
+    styleElement.classList.add("carousel-style");
+    styleElement.innerHTML = css;
+    document.head.appendChild(styleElement);
   };
 
   const setEventListeners = () => {
-    const carouselInner = document.querySelector(".carousel-inner");
-    let scrollPosition = 0;
-
-    const leftArrow = document.querySelector(".carousel-arrow.left");
-    const rightArrow = document.querySelector(".carousel-arrow.right");
-
-    leftArrow.addEventListener("click", () => {
-      const itemWidth = carouselInner.firstElementChild.offsetWidth;
-      scrollPosition = Math.max(scrollPosition - itemWidth, 0);
-      carouselInner.style.transform = `translateX(-${scrollPosition}px)`;
-    });
-
-    rightArrow.addEventListener("click", () => {
-      const itemWidth = carouselInner.firstElementChild.offsetWidth;
-      const maxScroll = (carouselInner.children.length - 6.5) * itemWidth;
-      scrollPosition = Math.min(scrollPosition + itemWidth, maxScroll);
-      carouselInner.style.transform = `translateX(-${scrollPosition}px)`;
-    });
-
     document.querySelectorAll(".heart-icon").forEach((icon, index) => {
       icon.addEventListener("click", () => {
         const isFavorited = icon.classList.toggle("favorited");
