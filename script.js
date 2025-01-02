@@ -26,7 +26,6 @@
       localStorage.setItem("productCarouselData", JSON.stringify(data));
       return data;
     } catch (error) {
-      console.error("Failed to fetch products:", error);
       return null;
     }
   };
@@ -112,6 +111,9 @@
   const buildCSS = () => {
     const css = `
         * {
+          margin: 0;
+          padding:0;
+          box-sizing: border-box;
           scroll-behavior: smooth;
         }
         body{
@@ -150,6 +152,7 @@
           background-color: white;
           transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
+
         .carousel-item:hover {
             transform: scale(1.01);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.06);
